@@ -39,10 +39,8 @@ class Transaction extends Model {
                 throw new Error("User not found.");
               }
               if (transaction.operation === "DEPOSIT") {
-                console.log(transaction.balance);
                 user.balance = parseFloat(user.balance) + transaction.value;
               } else if (transaction.operation === "WITHDRAW") {
-                console.log(user.balance, transaction.value);
                 if (parseFloat(user.balance) >= transaction.value) {
                   user.balance = parseFloat(user.balance) - transaction.value;
                 } else {

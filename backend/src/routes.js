@@ -4,9 +4,10 @@ const routes = Router();
 
 const UserController = require("./Controllers/UserController");
 const TransactionController = require("./Controllers/TransactionController");
+const DocumentationController = require("./Controllers/DocumentationController");
 
 routes.get("/", (req, res) => {
-  return res.json("hello world");
+  return res.json(DocumentationController.endpoints);
 });
 
 routes.get("/users", UserController.index);
