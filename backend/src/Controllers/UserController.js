@@ -11,22 +11,41 @@ class UserController {
     return res.json(users);
   }
 
-  async show (req, res){
-    const {user_id} = req.params;
+  async show(req, res) {
+    const { user_id } = req.params;
 
     const user = User.findByPk({
       include: {
-        association: 'transactions'
+        association: "transactions",
       },
-    })
+    });
   }
 
   async create(req, res) {
     try {
-      const newUser = req.body;
-      const user = await User.create(newUser);
+      const {
+        firstName,
+        lastName,
+        email,
+        cpfCnpj,
+        account,
+        password,
+      } = req.body;
+      const user = await User.create({
+        firstName: firstName,
+        lastName: lastName,
+        email: email,
+        cpfCnpjFormatado: cpfCnpj,
+        account: account,
+        password: password,
+        flActive: true,
+      });
       return res.json(user);
     } catch (Error) {
+      if (Error.errors.length > 0) {
+        var result = Error.errors.map((x) => x.message).join(",");
+        return res.status(500).json("Error: " + result);
+      }
       return res.status(500).json(Error.message);
     }
   }

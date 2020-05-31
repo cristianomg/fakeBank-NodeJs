@@ -11,7 +11,11 @@ class TransactionController {
       });
       return res.json(transaction);
     } catch (Error) {
-      return res.status(500).json({ error: Error.message });
+      if (Error.errors.length > 0) {
+        var result = Error.errors.map((x) => x.message).join(",");
+        return res.status(500).json("Error: " + result);
+      }
+      return res.status(500).json(Error.message);
     }
   }
   async withdraw(req, res) {
@@ -25,7 +29,11 @@ class TransactionController {
       });
       return res.json(transaction);
     } catch (Error) {
-      return res.status(500).json({ error: Error.message });
+      if (Error.errors.length > 0) {
+        var result = Error.errors.map((x) => x.message).join(",");
+        return res.status(500).json("Error: " + result);
+      }
+      return res.status(500).json(Error.message);
     }
   }
 }
