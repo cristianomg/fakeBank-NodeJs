@@ -42,6 +42,7 @@ module.exports = {
     Transaction: {
       deposit: {
         router: "/users/{user_id}/deposit",
+        method: "post",
         params: {
           user_id: "integer",
         },
@@ -52,6 +53,7 @@ module.exports = {
       },
       withdraw: {
         router: "/users/{user_id}/withdraw",
+        method: "post",
         params: {
           user_id: "integer",
         },
