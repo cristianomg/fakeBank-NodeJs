@@ -14,5 +14,6 @@ routes.get("/users", UserController.index);
 routes.post("/users", UserController.create);
 
 routes.post("/users/:user_id/deposit", TransactionController.deposit);
+routes.post("/users/:user_id/withdraw", TransactionController.withdraw);
 
 module.exports = routes;

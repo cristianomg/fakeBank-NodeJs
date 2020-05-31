@@ -23,6 +23,9 @@ class Transaction extends Model {
           type: DataTypes.DECIMAL,
           allowNull: false,
           defaultValue: 0.0,
+          validate: {
+            min: { args: 0.1, msg: "Invalid value." },
+          },
         },
       },
       {
@@ -32,11 +35,16 @@ class Transaction extends Model {
           beforeCreate: async (transaction) => {
             if (transaction.value) {
               const user = await User.findByPk(transaction.userId);
+              if (!user) {
+                throw new Error("User not found.");
+              }
               if (transaction.operation === "DEPOSIT") {
+                console.log(transaction.balance);
                 user.balance = parseFloat(user.balance) + transaction.value;
               } else if (transaction.operation === "WITHDRAW") {
-                if (user.balance >= transaction.balance) {
-                  user.balance = parseFloat(user.balance) - transaction.balance;
+                console.log(user.balance, transaction.value);
+                if (parseFloat(user.balance) >= transaction.value) {
+                  user.balance = parseFloat(user.balance) - transaction.value;
                 } else {
                   throw new Error("Insufficient funds in the account.");
                 }
