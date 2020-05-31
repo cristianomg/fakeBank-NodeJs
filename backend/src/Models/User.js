@@ -64,12 +64,16 @@ class User extends Model {
             notEmpty: true,
           },
         },
+        balance: {
+          type: DataTypes.DECIMAL,
+          defaultValue: 0,
+        },
       },
       {
         sequelize,
         tableName: "users",
         hooks: {
-          beforeSave: async (user) => {
+          beforeValidate: async (user) => {
             if (user.password) {
               user.passwordHash = await bcrypt.hash(user.password, 8);
             }
@@ -80,6 +84,12 @@ class User extends Model {
         },
       }
     );
+  }
+  static associate(models) {
+    this.hasMany(models.Transaction, {
+      foreignKey: "userId",
+      as: "transactions",
+    });
   }
   async checkPassword(password) {
     return bcrypt.compare(password, this.passwordHash);
