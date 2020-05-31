@@ -11,6 +11,16 @@ class UserController {
     return res.json(users);
   }
 
+  async show (req, res){
+    const {user_id} = req.params;
+
+    const user = User.findByPk({
+      include: {
+        association: 'transactions'
+      },
+    })
+  }
+
   async create(req, res) {
     try {
       const newUser = req.body;
@@ -19,17 +29,6 @@ class UserController {
     } catch (Error) {
       return res.status(500).json(Error.message);
     }
-  }
-  async verificarUser(req, res) {
-    const session = req.body;
-    console.log(session);
-    const user = await User.findAll({
-      where: {
-        account: {
-          [Op.eq]: session.account,
-        },
-      },
-    });
   }
 }
 

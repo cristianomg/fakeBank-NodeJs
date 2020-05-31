@@ -27,6 +27,18 @@ module.exports = {
         description: "Cria um novo usuário",
       },
     },
+    Session: {
+      login: {
+        router: "/session/login",
+        method: "post",
+        body: {
+          email: "string",
+          senha: "string",
+        },
+        description:
+          "Retornar a sessão do usuário caso o email e senha esteja correto.",
+      },
+    },
     Transaction: {
       deposit: {
         router: "/users/{user_id}/deposit",
