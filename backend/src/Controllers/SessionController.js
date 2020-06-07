@@ -3,6 +3,9 @@ const { Op } = require("sequelize");
 class SessionController {
   async login(req, res) {
     const { email, password } = req.body;
+    if (!email || !password) {
+      return res.status(400).json({ message: "Erro: requisição invalida." });
+    }
     const user = await User.findOne({
       include: {
         association: "transactions",

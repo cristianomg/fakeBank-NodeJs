@@ -13,12 +13,16 @@ class UserController {
 
   async show(req, res) {
     const { user_id } = req.params;
-
-    const user = User.findByPk({
+    console.log(user_id);
+    const user = await User.findByPk(user_id, {
       include: {
         association: "transactions",
       },
     });
+    if (user) {
+      return res.json(user);
+    }
+    return res.status(400).json({ status: 400, message: "User not Found" });
   }
 
   async create(req, res) {
@@ -44,9 +48,9 @@ class UserController {
     } catch (Error) {
       if (Error.errors.length > 0) {
         var result = Error.errors.map((x) => x.message).join(",");
-        return res.status(500).json("Error: " + result);
+        return res.status(400).json("Error: " + result);
       }
-      return res.status(500).json(Error.message);
+      return res.status(400).json({ message: Error.message });
     }
   }
 }
