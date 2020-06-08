@@ -1,15 +1,13 @@
 import React, { useState, ChangeEvent, FormEvent } from 'react'
 import LoadingIndicator from '../../components/LoadingIndicator'
 import HeaderOperations from '../../components/HeaderOperations'
+import SucessAnSucessNotification from '../../components/SucessAnSucessNotification'
 
 
-import {Alert} from '@material-ui/lab'
 
 import './styles.css'
 import api from '../../services/api'
 import { trackPromise } from 'react-promise-tracker'
-import { Snackbar } from '@material-ui/core'
-import { useHistory } from 'react-router-dom'
 
 interface formData {
     account:number,
@@ -18,7 +16,6 @@ interface formData {
 }
 
 const Withdraw = () =>{
-    const history = useHistory();
     const user_id = localStorage.getItem('id')
     const [madeWithdraw, setMadeWithdraw] = useState(false);
     const [notMadeWithdraw, setNotMadeWithdraw] = useState(false);
@@ -55,13 +52,6 @@ const Withdraw = () =>{
             makeWithdraw()
             )
         }
-
-
-    function madeMsgSucess(){
-        setMadeWithdraw(false)
-        history.push('/dashboard')
-    }
-
     return (
         <div id='page-withdraw'>
         <LoadingIndicator/>
@@ -86,16 +76,15 @@ const Withdraw = () =>{
                 </fieldset>
                 <button type='submit'>Sacar</button>
             </form>
-            <Snackbar open={madeWithdraw} autoHideDuration={3000} onClose={()=>madeMsgSucess()}>
-                <Alert onClose={()=>setMadeWithdraw(false)} severity="success">
-                    Saque Realizado com sucesso.
-                </Alert>
-            </Snackbar>
-            <Snackbar open={notMadeWithdraw} autoHideDuration={3000} onClose={()=>setNotMadeWithdraw(false)}>
-                <Alert onClose={()=>setNotMadeWithdraw(false)} severity="error">
-                    {message}
-                </Alert>
-            </Snackbar>
+            <SucessAnSucessNotification 
+            messageSucess="Saque Realizado com sucesso."
+            messageUnSucess={message}
+            redirectUrlOnSucess="/dashboard"
+            setSucess={setMadeWithdraw}
+            setUnsuccessfully={setNotMadeWithdraw}
+            sucess={madeWithdraw}
+            unsuccessfully={notMadeWithdraw}
+            />
         </div>
 
     )

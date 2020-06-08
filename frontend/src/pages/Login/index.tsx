@@ -1,6 +1,5 @@
 import React, { ChangeEvent, useState, FormEvent } from 'react'
 import { FiLogIn } from 'react-icons/fi'
-import { useHistory } from 'react-router-dom'
 import LoadingIndicator from '../../components/LoadingIndicator'
 
 
@@ -8,6 +7,8 @@ import './styles.css'
 import api from '../../services/api'
 import { trackPromise } from 'react-promise-tracker'
 import Header from '../../components/Header'
+import SucessAnSucessNotification from '../../components/SucessAnSucessNotification'
+import { useHistory } from 'react-router-dom'
 
 interface Login {
     email: string,
@@ -15,13 +16,14 @@ interface Login {
 }
 
 const Login = () =>{
+    const history = useHistory();
+    const [sucess, setSucess] = useState(false)
+    const [unSucess, setUnSucess] = useState(false)
+    const [message, setMessage] = useState('')
     const [formLogin, setFormLogin] = useState({
         email: '',
         password: ''
     });
-
-    const history = useHistory()
-
     function handleInputChange(event:ChangeEvent<HTMLInputElement>){
         const {name, value} = event.target
         setFormLogin({...formLogin, [name]: value})
@@ -33,7 +35,6 @@ const Login = () =>{
         trackPromise(
             api.post('session/login', formLogin)
             .then((response)=>{
-                console.log(response.data)
                 const {id, firstName, lastName,
                        account, password, cpfCnpj, email,
                        flActivate} = response.data
@@ -46,12 +47,14 @@ const Login = () =>{
                 localStorage.setItem('cpfCnpj', cpfCnpj)
                 localStorage.setItem('email', email)
                 localStorage.setItem('flActivate', flActivate)
-                history.push('/Dashboard')
+                setSucess(true)
+                setMessage('Login realizado com sucesso.')
+                history.push('/dashboard')
             })
             .catch((response)=>{
-                console.log(response)
                 localStorage.clear()
-                alert('Erro ao fazer login')
+                setUnSucess(true)
+                setMessage('Erro ao realizar login, tente novamente.')
             })   
         )
     }
@@ -77,6 +80,15 @@ const Login = () =>{
                     <strong>Entrar</strong>
                 </button>
             </form>
+
+            <SucessAnSucessNotification 
+            messageSucess={message}
+            messageUnSucess={message}
+            setSucess={setSucess}
+            setUnsuccessfully={setUnSucess}
+            sucess={sucess}
+            unsuccessfully={unSucess}
+            />
 
         </div>
     )

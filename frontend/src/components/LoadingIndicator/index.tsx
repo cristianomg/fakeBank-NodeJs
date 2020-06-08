@@ -16,19 +16,20 @@ const LoadingIndicator = () => {
 }}}>
     <div
         style={{
-            margin: "20px",
-            width: "100%",
-            height: "100",
+            position: "absolute",
+            left: "50%",
+            top: "30%",
             display: "flex",
             justifyContent: "center",
             alignItems: "center",
-            flexDirection: "column-reverse"
+            flexDirection: "column-reverse",
+            overflow: 'hidden'
             }}
         >
         <strong style={{
             fontSize: "15px",
             color: "#2d82b7",
-        }}>Carregando</strong>
+        }}>Carregando...</strong>
         <Loader type="Audio" color="#2d82b7" height={100} width={100} />     
   
     </div>

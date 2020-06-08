@@ -1,5 +1,4 @@
 import React, {useState, ChangeEvent, FormEvent} from 'react'
-import {useHistory} from 'react-router-dom'
 import LoadingIndicator from '../../components/LoadingIndicator'
 import { trackPromise } from 'react-promise-tracker'
 
@@ -7,6 +6,7 @@ import api from '../../services/api'
 
 import './styles.css'
 import Header from '../../components/Header'
+import SucessAnSucessNotification from '../../components/SucessAnSucessNotification'
 
 interface formData {
     firstName: string,
@@ -17,7 +17,9 @@ interface formData {
     password: string
 }
 const Register = () =>{
-    const history = useHistory();
+    const [sucess, setSucess] = useState(false);
+    const [unsucess, setUnSucess] = useState(false);
+    const [message, setMessage] = useState('');
     const [formData, setFormData] = useState<formData>(
         {   firstName: '',
             lastName: '',
@@ -36,11 +38,11 @@ const Register = () =>{
         console.log(formData)
         await trackPromise(
         api.post('/users', formData).then(()=>{
-            alert('Conta criada com sucesso.')
-            history.push('/')
+            setSucess(true)
         })
         .catch((response) => {
-            alert('Erro ao criar conta, tente novamente.')
+            setMessage('Erro ao criar conta, tente novamente.')
+            setUnSucess(true)
         })
         )
     }
@@ -118,6 +120,15 @@ const Register = () =>{
                 </fieldset>
                 <button type='submit'>Cadastrar</button>
             </form>
+            <SucessAnSucessNotification 
+            messageSucess="Conta criada com sucesso."
+            messageUnSucess={message}
+            redirectUrlOnSucess="/"
+            setSucess={setSucess}
+            setUnsuccessfully={setUnSucess}
+            sucess={sucess}
+            unsuccessfully={unsucess}
+            />
         </div>
     )
 }

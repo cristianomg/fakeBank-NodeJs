@@ -5,9 +5,7 @@ import HeaderOperations from '../../components/HeaderOperations'
 import './styles.css'
 import api from '../../services/api'
 import { trackPromise } from 'react-promise-tracker'
-import { useHistory } from 'react-router-dom'
-import { Snackbar } from '@material-ui/core'
-import { Alert } from '@material-ui/lab'
+import SucessAnSucessNotification from '../../components/SucessAnSucessNotification'
 
 interface formData {
     account:number,
@@ -17,7 +15,6 @@ interface formData {
 
 const Deposit = () =>{
     const user_id = localStorage.getItem('id')
-    const history = useHistory();
     const [message, setMessage] = useState('');
     const [madeDeposit, setMadeDeposit] = useState(false);
     const [notMadeDeposit, setNotMadeDeposit] = useState(false);
@@ -41,10 +38,6 @@ const Deposit = () =>{
                 setNotMadeDeposit(true)})
             )
         }
-    function madeMsgSucess(){
-        setMadeDeposit(false)
-        history.push('/dashboard')
-    }
     return (
         <div id='page-deposit'>
         <LoadingIndicator/>
@@ -72,16 +65,15 @@ const Deposit = () =>{
                 </fieldset>
                 <button type='submit'>Depositar</button>
             </form>
-            <Snackbar open={madeDeposit} autoHideDuration={3000} onClose={()=>madeMsgSucess()}>
-                <Alert onClose={()=>setMadeDeposit(false)} severity="success">
-                    Depósito Realizado com sucesso.
-                </Alert>
-            </Snackbar>
-            <Snackbar open={notMadeDeposit} autoHideDuration={3000} onClose={()=>setNotMadeDeposit(false)}>
-                <Alert onClose={()=>setNotMadeDeposit(false)} severity="error">
-                    {message}
-                </Alert>
-            </Snackbar>
+            <SucessAnSucessNotification 
+            messageSucess="Depósito Realizado com sucesso."
+            messageUnSucess={message}
+            redirectUrlOnSucess="/dashboard"
+            setSucess={setMadeDeposit}
+            setUnsuccessfully={setMadeDeposit}
+            sucess={madeDeposit}
+            unsuccessfully={notMadeDeposit}
+            />
         </div>
 
     )
