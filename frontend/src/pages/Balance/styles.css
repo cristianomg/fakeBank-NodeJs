@@ -140,7 +140,7 @@
 }
 
 #page-balance form button:hover {
-  background: #2d82b7;
+  background: var(--text-color);
 }
 
 .items-grid {
