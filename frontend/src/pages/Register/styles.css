@@ -90,6 +90,8 @@
   padding: 16px 24px;
   font-size: 16px;
   color: #6c6c80;
+  border: 2px solid #2d82b7;
+  outline: none;
 }
 
 #page-register-account form .field select {
