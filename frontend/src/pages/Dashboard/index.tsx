@@ -34,14 +34,18 @@ const Dashboard = () =>{
         .then((response)=>setUser(response.data)))
     }, [user_id])
 
+    function formatName(name:string){
+        return name.replace(name.charAt(0), name.charAt(0).toUpperCase())
+    }
+
+
     if (!isAuth){
         return <Redirect to='/'/>
     }
     return (
         <div id='page-dashboard'>
             <Header/>
-    <div className='title'><h1>Ola, {user.firstName.replace(user.firstName.charAt(0),
-     user.firstName.charAt(0).toUpperCase())} seu saldo é R$ {Number(user.balance).toFixed(2)}</h1></div>
+    <div className='title'><h1>Ola, {formatName(user.firstName)} {formatName(user.lastName)}. Seu saldo é R$ {Number(user.balance).toFixed(2)}.</h1></div>
             <ul className='items-grid'>
                 <li 
                     onClick={()=> history.push('/balance')}>

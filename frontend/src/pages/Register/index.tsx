@@ -15,6 +15,10 @@ interface formData {
     email: string,
     account: number,
     password: string
+    city: string,
+    uf: string,
+    neighborhood: string,
+    number: number,
 }
 
 interface Uf{
@@ -42,16 +46,40 @@ const Register = () =>{
             cpfCnpj: '',
             email: '',
             account: 0,
-            password: ''}
+            password: '',
+            city: '',
+            uf: '',
+            neighborhood: '',
+            number: 0
+        }
     );
     function handleInputChange(event:ChangeEvent<HTMLInputElement>){
         const {name, value} = event.target
         setFormData({...formData, [name]: value})
     }
-    async function handleSubmit(event:FormEvent){
+    function handleSubmit(event:FormEvent){
         event.preventDefault()
-        await trackPromise(
-        api.post('/users', formData).then(()=>{
+        const {firstName, lastName, cpfCnpj, email,
+             account, password, neighborhood, number} = formData;
+        
+        const city = selectedCity;
+        const uf = selectedUf;
+            
+        const data = {
+            firstName,
+            lastName,
+            cpfCnpj,
+            email,
+            account,
+            password,
+            city,
+            uf,
+            neighborhood,
+            number
+        }
+        console.log(data)
+        trackPromise(
+        api.post('/users', data).then(()=>{
             setSucess(true)
         })
         .catch((error) => {
@@ -132,7 +160,7 @@ const Register = () =>{
                             <select name='uf' id='uf' onChange={handleSelectUf} required>
                                 <option value={0}>Selecione uma UF</option>
                                 {ufs.map(uf=>(
-                                    <option key={uf.id} value={uf.sigla}>{uf.nome}</option>
+                                    <option key={uf.id} value={uf.sigla}>{uf.sigla}</option>
                                 ))}
                             </select>
                         </div>  
