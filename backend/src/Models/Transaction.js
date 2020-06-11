@@ -42,13 +42,11 @@ class Transaction extends Model {
               if (transaction.operation === "DEPOSIT") {
                 user.balance = parseFloat(user.balance) + transaction.value;
               } else if (transaction.operation === "WITHDRAW") {
-                console.log(user.balance);
-                console.log(transaction.value);
                 if (parseFloat(user.balance) >= transaction.value) {
                   user.balance = parseFloat(user.balance) - transaction.value;
                 } else {
                   throw new TransactionException(
-                    "Insufficient funds in the account."
+                    "Saldo insuficiente na conta."
                   );
                 }
               }

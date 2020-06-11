@@ -33,6 +33,10 @@ class UserController {
         cpfCnpj,
         account,
         password,
+        city,
+        uf,
+        number,
+        neighborhood,
       } = req.body;
       const user = await User.create({
         firstName: firstName,
@@ -42,6 +46,10 @@ class UserController {
         account: account,
         password: password,
         flActive: true,
+        city: city,
+        uf: uf,
+        number: number,
+        neighborhood: neighborhood,
       });
       return res.json(user);
     } catch (Error) {
