@@ -1,6 +1,6 @@
-import React, {useState, ChangeEvent, FormEvent} from 'react'
-import LoadingIndicator from '../../components/LoadingIndicator'
+import React, {useState, ChangeEvent, FormEvent, useEffect} from 'react'
 import { trackPromise } from 'react-promise-tracker'
+import axios from 'axios'
 
 import api from '../../services/api'
 
@@ -16,9 +16,25 @@ interface formData {
     account: number,
     password: string
 }
+
+interface Uf{
+    id:number,
+    sigla: string,
+    nome: string
+
+}
+
+interface City{
+    id: number,
+    nome: string
+}
 const Register = () =>{
     const [sucess, setSucess] = useState(false);
     const [unsucess, setUnSucess] = useState(false);
+    const [ufs, setUfs] = useState<Uf[]>([])
+    const [citys, setCitys] = useState<City[]>([]);
+    const [selectedUf, setSelectedUf] = useState<string>("0");
+    const [selectedCity, setSelectedCity] = useState<string>("0");
     const [message, setMessage] = useState('');
     const [formData, setFormData] = useState<formData>(
         {   firstName: '',
@@ -31,25 +47,47 @@ const Register = () =>{
     function handleInputChange(event:ChangeEvent<HTMLInputElement>){
         const {name, value} = event.target
         setFormData({...formData, [name]: value})
-        console.log(formData)
     }
     async function handleSubmit(event:FormEvent){
         event.preventDefault()
-        console.log(formData)
         await trackPromise(
         api.post('/users', formData).then(()=>{
             setSucess(true)
         })
-        .catch((response) => {
-            setMessage('Erro ao criar conta, tente novamente.')
+        .catch((error) => {
+            setMessage(error.response?.data?.message || 'Ocorrou um erro interno, tente novamente.')
             setUnSucess(true)
         })
         )
     }
+    useEffect(()=>{
+        trackPromise(
+            axios.get<Uf[]>('https://servicodados.ibge.gov.br/api/v1/localidades/estados?orderby=nome')
+            .then(response => setUfs(response.data))
+        )
+    }, [])
+
+    useEffect(()=>{
+        if (selectedUf === '0'){
+            return;
+        }
+        axios.get<Uf[]>
+        (`https://servicodados.ibge.gov.br/api/v1/localidades/estados/${selectedUf}/municipios?orderby=nome`)
+        .then(response => setCitys(response.data))
+    }, [selectedUf])
+
+    function handleSelectUf(event:ChangeEvent<HTMLSelectElement>){
+        setSelectedUf(event.target.value)
+    }
+
+    function handleSelectCity(event:ChangeEvent<HTMLSelectElement>){
+        setSelectedCity(event.target.value)
+    }
+
+
     return (
         <div id="page-register-account">
             <Header/>
-            <LoadingIndicator/>
             <form onSubmit={handleSubmit}>
                 <h1>Cadastrar nova conta</h1>
                 <fieldset>
@@ -61,7 +99,8 @@ const Register = () =>{
                             <label>Nome</label>
                             <input type='text' 
                             name='firstName' id='firstName' 
-                            onChange={handleInputChange}/>
+                            onChange={handleInputChange}
+                            required/>
                         </div>  
                         <div className="field">
                             <label>Sobrenome</label>
@@ -69,7 +108,8 @@ const Register = () =>{
                             type='text' 
                             name='lastName' 
                             id='lastName' 
-                            onChange={handleInputChange}/>
+                            onChange={handleInputChange}
+                            required/>
                         </div>
                     </div>
                     <div className="field">
@@ -78,8 +118,54 @@ const Register = () =>{
                             type='text'
                              name='cpfCnpj' 
                              id='cpfCnpj' 
-                             onChange={handleInputChange}/>
+                             onChange={handleInputChange}
+                             required/>
                         </div>
+                </fieldset>
+                <fieldset>
+                    <legend>
+                        <h2>Endereço</h2>
+                    </legend>
+                    <div className="field-group">
+                        <div className="field">
+                            <label>UF</label>
+                            <select name='uf' id='uf' onChange={handleSelectUf} required>
+                                <option value={0}>Selecione uma UF</option>
+                                {ufs.map(uf=>(
+                                    <option key={uf.id} value={uf.sigla}>{uf.nome}</option>
+                                ))}
+                            </select>
+                        </div>  
+                        <div className="field">
+                            <label>Cidade</label>
+                            <select name='city' id='city' onChange={handleSelectCity} required>
+                                <option value={0}>Selecione uma cidade</option>
+                                {citys.map(city=>(
+                                    <option key={city.id} value={city.nome}>{city.nome}</option>
+                                ))}
+                            </select>
+                        </div>
+                    </div>
+                    <div className="field-group">
+                        <div className="field">
+                            <label>Bairro</label>
+                            <input type='text' 
+                            id='neighborhood' 
+                            name='neighborhood'
+                            onChange={handleInputChange}
+                            required
+                            />
+                        </div>  
+                        <div className="field">
+                            <label>Numero</label>
+                            <input type='number' 
+                            id='number'
+                            name='number' 
+                            onChange={handleInputChange}
+                            required
+                            />
+                        </div>
+                    </div>
                 </fieldset>
                 <fieldset>
                     <legend>
@@ -93,7 +179,8 @@ const Register = () =>{
                             type='email' 
                             name='email'
                             id='email'
-                            onChange={handleInputChange}/>
+                            onChange={handleInputChange}
+                            required/>
                         </div>
                 </fieldset>
                 <fieldset>
@@ -107,14 +194,19 @@ const Register = () =>{
                             type='number' 
                             name='account' 
                             id='account' 
-                            onChange={handleInputChange}/>
+                            onChange={handleInputChange}
+                            required
+                            min={99999}/>
                         </div>
                         <div className='field'>
                             <label>Senha</label>
                             <input type='password'
                             name='password' 
                             id='password' 
-                            onChange={handleInputChange}/>
+                            onChange={handleInputChange}
+                            required
+                            minLength={6}
+                            maxLength={16}/>
                         </div>
                     </div>
                 </fieldset>

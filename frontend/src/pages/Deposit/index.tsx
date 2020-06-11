@@ -1,5 +1,4 @@
 import React, { ChangeEvent, FormEvent, useState } from 'react'
-import LoadingIndicator from '../../components/LoadingIndicator'
 import HeaderOperations from '../../components/HeaderOperations'
 
 import './styles.css'
@@ -33,14 +32,13 @@ const Deposit = () =>{
         trackPromise(
             api.post(`users/${user_id}/deposit`, formData)
             .then(()=>setMadeDeposit(true))
-            .catch(()=>{
-                setMessage("Conta e/ou senha invalidas.")
+            .catch((error)=>{
+                setMessage(error?.response?.data?.message || 'Ocorrou um erro interno, tente novamente.')
                 setNotMadeDeposit(true)})
             )
         }
     return (
         <div id='page-deposit'>
-        <LoadingIndicator/>
             <HeaderOperations/>
             <form onSubmit={handleSubmit}>
                 <h2>Depósito</h2>

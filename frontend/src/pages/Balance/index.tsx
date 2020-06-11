@@ -5,7 +5,7 @@ import api from '../../services/api'
 
 import './styles.css'
 import { trackPromise } from 'react-promise-tracker'
-import LoadingIndicator from '../../components/LoadingIndicator'
+import {Table, TableHead, TableRow, TableCell, TableBody, TableContainer} from '@material-ui/core'
 
 interface User {
     firstName: string,
@@ -30,16 +30,8 @@ const Balance = () =>{
     const history = useHistory()
     const isAuth = localStorage.getItem('isAuth')
     const user_id = localStorage.getItem('id')
-    const [user, setUser] = useState<User>({
-        firstName: '',
-        lastName: '',
-        cpfCnpj: '',
-        email: '',
-        account: 0,
-        flActive: false,
-        balance: 0,
-        transactions: []
-    });    
+    const [qtdMovimentosPage, setQtdMovimentosPage] = useState(5)
+ 
     const [transactions, setTransactions] = useState<Transaction[]>([]);
 
     function parseOperation(operation:string){
@@ -60,23 +52,17 @@ const Balance = () =>{
         const newHour = new Date(Date.parse(date)).toLocaleTimeString('br')
         return newHour
     }
-
-
+    
+    function handleAddMoreTransactionsOnList(){
+        setQtdMovimentosPage(qtdMovimentosPage + 5);
+    }
 
     useEffect(() => {
-        async function loadUser(){
-            api.get(`/users/${user_id}`)
-            .then(response=>{setUser(response.data)})
-            .catch(()=>history.push('/'))
-        }
         async function loadTransactions(){
             api.get(`/users/${user_id}/transactions`)
             .then(response=>setTransactions(response.data))
             .catch(()=>history.push('/'))
-        } 
-        trackPromise(
-            loadUser()
-        );
+        }
         trackPromise(loadTransactions())
     }, [history, user_id]);
 
@@ -87,39 +73,36 @@ const Balance = () =>{
         <div id='page-balance'>
             <HeaderOperations/>
             <div className="container">
-                <LoadingIndicator/>
-                <h1>Saldo: {Number(user.balance).toFixed(2)}</h1>
+                <h1>Extrato</h1>
                 {transactions.length > 0 ? 
-                <table>
-                    <thead>
-                        <tr>
-                            <td>
-                                Operação
-                            </td>
-                            <td>
-                                Valor
-                            </td>
-                            <td>
-                                Data
-                            </td>
-                            <td>
-                                Horário
-                            </td>
-                        </tr>
-                    </thead>
-                    <tbody>
-                    {transactions.map(transactions => (
-                        <tr>
-                            <td>
-                                {parseOperation(transactions.operation)}
-                            </td>
-                            <td>R$: {Number(transactions.value).toFixed(2)}</td>
-                            <td>{parseDate(transactions.createdAt)}</td>
-                            <td>{parseHour(transactions.createdAt)}</td>
-                        </tr>
-                    ))}
-                    </tbody>
-                </table>
+                <div>
+                    <TableContainer>
+                        <Table >
+                            <TableHead>
+                                <TableRow>
+                                    <TableCell align="center">Operação</TableCell>
+                                    <TableCell align="center">Valor</TableCell>
+                                    <TableCell align="center">Data</TableCell>
+                                    <TableCell align="center">Horário</TableCell>
+                            </TableRow>
+                            </TableHead>
+                            <TableBody>
+                                {transactions.slice(0, qtdMovimentosPage).map(transaction => (
+                                    <TableRow key={transaction.id}>
+                                        <TableCell align="center">{parseOperation(transaction.operation)}</TableCell>
+                                        <TableCell align="center">R$: {Number(transaction.value).toFixed(2)}</TableCell>
+                                        <TableCell align="center">{parseDate(transaction.createdAt)}</TableCell>
+                                        <TableCell align="center">{parseHour(transaction.createdAt)}</TableCell>
+                                    </TableRow>
+                                ))}
+                            </TableBody>
+                        </Table>
+                        <div className='btn-pagination'>
+                                    <button onClick={handleAddMoreTransactionsOnList}><span>Carregar mais</span></button>
+
+                                </div>
+                    </TableContainer>
+                </div>
                 :
                 <p>Nenhum transação realizada.</p>}
 

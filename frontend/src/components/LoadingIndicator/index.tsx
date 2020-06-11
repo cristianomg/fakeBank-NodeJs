@@ -28,7 +28,7 @@ const LoadingIndicator = () => {
         >
         <strong style={{
             fontSize: "15px",
-            color: "#2d82b7",
+            color: "#07004d",
         }}>Carregando...</strong>
         <Loader type="Audio" color="#2d82b7" height={100} width={100} />     
   

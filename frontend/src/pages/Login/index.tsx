@@ -1,6 +1,5 @@
 import React, { ChangeEvent, useState, FormEvent } from 'react'
 import { FiLogIn } from 'react-icons/fi'
-import LoadingIndicator from '../../components/LoadingIndicator'
 
 
 import './styles.css'
@@ -51,10 +50,11 @@ const Login = () =>{
                 setMessage('Login realizado com sucesso.')
                 history.push('/dashboard')
             })
-            .catch((response)=>{
+            .catch((error)=>{
+                console.log(error.response)
                 localStorage.clear()
                 setUnSucess(true)
-                setMessage('Erro ao realizar login, tente novamente.')
+                setMessage(error?.response?.data?.message || 'Ocorrou um erro interno, tente novamente.')
             })   
         )
     }
@@ -62,17 +62,16 @@ const Login = () =>{
     return (
         <div id='page-login'>
             <Header/>
-            <LoadingIndicator/>
             <form onSubmit={handleSubmit}>
                 <h1>Faça seu login</h1>
                 <fieldset>
                     <div className="field">
                         <label>E-MAIL</label>
-                        <input type='email' name='email' id='email' onChange={handleInputChange}/>
+                        <input type='email' name='email' id='email' onChange={handleInputChange} required/>
                     </div>
                     <div className='field'>
                         <label>SENHA</label>
-                        <input type='password' name='password' id='password' onChange={handleInputChange}/>
+                        <input type='password' name='password' id='password' onChange={handleInputChange} required/>
                     </div>
                 </fieldset>
                 <button type='submit'>

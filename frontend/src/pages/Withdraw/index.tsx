@@ -1,5 +1,4 @@
 import React, { useState, ChangeEvent, FormEvent } from 'react'
-import LoadingIndicator from '../../components/LoadingIndicator'
 import HeaderOperations from '../../components/HeaderOperations'
 import SucessAnSucessNotification from '../../components/SucessAnSucessNotification'
 
@@ -31,18 +30,11 @@ const Withdraw = () =>{
         setFormData({...formData, [name]: value})
     }
     async function makeWithdraw():Promise<void>{
-        const response = await api.get(`/users/${user_id}`)
-        const {balance} = response.data
-        if (Number(balance) >= Number(formData.value)){
-            api.post(`users/${user_id}/withdraw`, formData)
-            .then(()=>setMadeWithdraw(true))
-            .catch((response)=>{
-                setMessage("Conta e/ou senha invalidas.")
-                setNotMadeWithdraw(true)});
-        }else{
-            setMessage('Saldo insuficiente.')
-            setNotMadeWithdraw(true)
-        }
+        api.post(`users/${user_id}/withdraw`, formData)
+        .then(()=>setMadeWithdraw(true))
+        .catch((error)=>{
+            setMessage(error?.response?.data?.message || 'Ocorrou um erro interno, tente novamente.')
+            setNotMadeWithdraw(true)});
     }
 
     function handleSubmit(event:FormEvent){
@@ -54,7 +46,6 @@ const Withdraw = () =>{
         }
     return (
         <div id='page-withdraw'>
-        <LoadingIndicator/>
             <HeaderOperations/>
             <form onSubmit={handleSubmit}>
                 <h2>Saque</h2>

@@ -1,5 +1,4 @@
 import React from 'react'
-import LoadingIndicator from '../../components/LoadingIndicator'
 import HeaderOperations from '../../components/HeaderOperations'
 
 import './styles.css'
@@ -7,7 +6,6 @@ import './styles.css'
 const Withdraw = () =>{
     return (
         <div id='page-withdraw'>
-        <LoadingIndicator/>
             <HeaderOperations/>
             <form>
                 <h2>Saque</h2>

@@ -67,6 +67,8 @@
   padding: 16px 24px;
   font-size: 16px;
   color: #6c6c80;
+  border: 2px solid #2d82b7;
+  outline: none;
 }
 
 #page-deposit form .field select {
@@ -136,6 +138,7 @@
   margin-top: 40px;
   transition: background-color 0.2s;
   cursor: pointer;
+  outline: none;
 }
 
 #page-deposit form button:hover {
