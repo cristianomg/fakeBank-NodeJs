@@ -22,14 +22,20 @@ class User extends Model {
         email: {
           type: DataTypes.STRING,
           allowNull: false,
-          unique: true,
+          unique: {
+            args: true,
+            msg: "O email já foi utilizado, utilize outro email.",
+          },
           validate: {
             isEmail: true,
           },
         },
         cpfCnpj: {
           type: DataTypes.STRING,
-          unique: true,
+          unique: {
+            args: true,
+            msg: "O cpf ou cnpj já foi utilizado, utilize outro.",
+          },
           allowNull: false,
           validate: {
             notEmpty: true,
@@ -44,7 +50,10 @@ class User extends Model {
         account: {
           type: DataTypes.INTEGER,
           allowNull: false,
-          unique: true,
+          unique: {
+            args: true,
+            msg: "A conta já foi utilizado, utilize outra.",
+          },
           validate: {
             notEmpty: true,
           },
@@ -62,6 +71,35 @@ class User extends Model {
           defaultValue: true,
           validate: {
             notEmpty: true,
+          },
+        },
+        city: {
+          type: DataTypes.STRING,
+          allowNull: false,
+          validate: {
+            notEmpty: true,
+            notNull: true,
+          },
+        },
+        uf: {
+          type: DataTypes.STRING,
+          allowNull: false,
+          validate: {
+            notNull: true,
+            notNull: true,
+            len: 2,
+          },
+        },
+        number: {
+          type: DataTypes.INTEGER,
+          allowNull: false,
+        },
+        neighborhood: {
+          type: DataTypes.STRING,
+          allowNull: false,
+          validate: {
+            notEmpty: true,
+            notNull: true,
           },
         },
         balance: {

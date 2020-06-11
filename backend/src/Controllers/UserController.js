@@ -13,7 +13,6 @@ class UserController {
 
   async show(req, res) {
     const { user_id } = req.params;
-    console.log(user_id);
     const user = await User.findByPk(user_id, {
       include: {
         association: "transactions",
@@ -48,7 +47,7 @@ class UserController {
     } catch (Error) {
       if (Error.errors.length > 0) {
         var result = Error.errors.map((x) => x.message).join(",");
-        return res.status(400).json("Error: " + result);
+        return res.status(400).json({ status: 400, message: result });
       }
       return res.status(400).json({ message: Error.message });
     }
