@@ -30,7 +30,7 @@ class TransactionController {
           .json({ status: 400, message: "campos invalidos." });
       }
       const user = await User.findByPk(user_id);
-      if (user.account !== Number(account)) {
+      if (user.account !== Number(account) || !user.checkPassword(password)) {
         return res
           .status(400)
           .json({ status: 400, message: "Conta e/ou senha incorreta." });
@@ -56,7 +56,7 @@ class TransactionController {
           .json({ status: 400, message: "campos invalidos." });
       }
       const user = await User.findByPk(user_id);
-      if (user.account !== Number(account)) {
+      if (user.account !== Number(account) || !user.checkPassword(password)) {
         return res
           .status(400)
           .json({ status: 400, message: "Conta e/ou senha incorreta." });

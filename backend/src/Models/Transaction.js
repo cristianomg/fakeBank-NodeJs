@@ -50,6 +50,7 @@ class Transaction extends Model {
                   );
                 }
               }
+              
               user.save();
             }
           },
