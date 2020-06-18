@@ -17,6 +17,10 @@ class SessionController {
       },
     });
 
+    if (!user){
+      return res.status(400).json({message: "Email or password incorrect."})
+    }
+
     if (await user.checkPassword(password)) {
       return res.json(user);
     }
